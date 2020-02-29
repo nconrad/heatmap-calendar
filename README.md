@@ -1,2 +1,3 @@
 # heatmap-calendar
-Yet another (fancy) calendar heatmap.
+
+Yet another fancy calendar heatmap.
