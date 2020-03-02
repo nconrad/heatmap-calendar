@@ -23,7 +23,7 @@ const getSampleData = (startDate, endDate) => {
 }
 
 const App = () => {
-  const start = new Date('12-01-2019')
+  const start = new Date('01-01-2020')
   const end = new Date('05-01-2020')
   const data = getSampleData(start, end)
   console.log('provided data', data)

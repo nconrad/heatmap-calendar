@@ -11,7 +11,7 @@
  * See LICENSE file in the project root for full license information.
  */
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import color from './color'
@@ -27,7 +27,7 @@ const yStart = 30
 const textRightMargin = 5
 
 // day defaults
-const days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat']
+const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 
 const defaultColorMap = (value) => {
@@ -45,14 +45,13 @@ const defaultColorMap = (value) => {
 
 
 const Grid = (props) => {
-  let {startDate, endDate, data, colorForValue, showValue} = props
+  let {
+    startDate, endDate,  data,
+    colorForValue, showValue, onMouseOver, onMouseOut
+  } = props
 
   // ensure data is sorted
   data.sort((a, b) => a.date - b.date)
-
-  // if start/end aren't provided, use start/end of data
-  startDate = startDate || data[0].date
-  endDate = endDate || data[data.length - 1].date
 
   // get all dates and other stuff between start/end
   const allDates = getDates(startDate, endDate)
@@ -76,18 +75,31 @@ const Grid = (props) => {
     for (; i < end; i++) {
       const date = allDates[j * n + i - startDay]
 
-      const value = dateMapping[date] || null
+      const dayData = dateMapping[date]
+      const value = dayData.value || null
       const color = colorForValue ? colorForValue(value) : defaultColorMap(value)
 
       const x = xStart + j * size
       const y = yStart + i * size
       const w = size - pad
 
-      const rect = <rect x={x} y={y} width={w} height={w} fill={color} key={k} />
+      const rect = (
+        <rect
+          x={x}
+          y={y}
+          width={w}
+          height={w}
+          fill={color}
+          onMouseOver={() => onMouseOver({x, y, data: dayData})}
+          onMouseOut={() => onMouseOut({x, y, data: dayData})}
+          key={k}
+        />
+      )
+
       const ele = showValue ?
         <g key={k}>
           {rect}
-          <text x={x} y={y} fontSize={size/2}>
+          <text x={x} y={y + size / 2} fontSize={size / 2}>
             {value}
           </text>
         </g> : rect
@@ -110,7 +122,7 @@ const Grid = (props) => {
 const getDateMapping = (data) => {
   let mapping = {}
   for (let i = 0; i < data.length; i++) {
-    mapping[data[i].date] = data[i].value
+    mapping[data[i].date] = data[i]
   }
 
   return mapping
@@ -153,25 +165,99 @@ const getDates = (startDate, endDate) => {
 }
 
 
+const Tooltip = (props) => {
+  const {show} = props;
+  let {x = 0, y = 0, data} = props.data;
+
+  useState(() => {
+
+  }, [x, y])
+
+  return (
+    <TooltipRoot
+      style={{top: y - size - tooltipPad * 2, left: x + size}}
+      className={`${show && 'show '}tooltip` }
+    >
+      {show &&
+        <>
+          {new Date(data.date).toDateString().slice(0, 10)}<br/>
+          value: {data.value}
+        </>
+      }
+    </TooltipRoot>
+  )
+}
+
+const tooltipPad = 10
+const TooltipRoot = styled.div`
+  position: absolute;
+  background: #666;
+  color: #fff;
+  padding: ${tooltipPad}px;
+  opacity: 0;
+  transition: opacity .5s;
+
+  &.show {
+    opacity: 1.0;
+    transition: all .5s;
+    transition-property: opacity, top, left;
+  }
+
+  &:empty {
+    visibility: hidden;
+  }
+`
+
 const HeatmapCalendar = (props) => {
-  const {startDate, endDate, data} = props
+  const {data} = props
+  let {startDate, endDate} = props
+
+  // if start/end aren't provided, use start/end of data
+  startDate = startDate || data[0].date
+  endDate = endDate || data[data.length - 1].date
+
+  const [hover, setHover] = useState(false)
+  const [hoverInfo, setHoverInfo] = useState({})
+
+  useEffect(() => {
+  }, [])
+
+  const onMouseOver = (obj) => {
+    setHover(true)
+    setHoverInfo(obj)
+  }
+
+  const onMouseOut = (obj) => {
+    setHover(false)
+  }
 
   return (
     <Root>
-      <DayAaxis/>
-      <Grid
-        startDate={startDate}
-        endDate={endDate}
-        data={data}
-      />
+      <SVG>
+        <DayAaxis/>
+        <Grid
+          startDate={startDate}
+          endDate={endDate}
+          data={data}
+          onMouseOver={obj => onMouseOver(obj)}
+          onMouseOut={obj => onMouseOut(obj)}
+        />
+      </SVG>
+
+      <Tooltip data={hoverInfo} show={hover} />
+
     </Root>
   )
 }
 
+const Root = styled.div`
+  position: relative;
+`
 
-const Root = styled.svg`
+const SVG = styled.svg`
   height: 100%;
   width: 100%;
 `
+
 
 export default HeatmapCalendar
