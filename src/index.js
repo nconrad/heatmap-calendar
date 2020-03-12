@@ -1,8 +1,10 @@
 
 
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { render } from 'react-dom'
 import styled from 'styled-components'
+
+//import data from '../sample-data/nssac-ncov-sd-summary'
 
 import HeatmapCalendar from './components/HeatmapCalendar'
 
@@ -22,15 +24,15 @@ const getSampleData = (startDate, endDate) => {
   return data
 }
 
+
 const App = () => {
   const start = new Date('01-01-2020')
   const end = new Date('05-01-2020')
   const data = getSampleData(start, end)
-  console.log('provided data', data)
 
   return (
     <Root>
-      <HeatmapCalendar startDate={start} endDate={end} data={data}/>
+      {data && <HeatmapCalendar data={data}/>}
     </Root>
   )
 }
