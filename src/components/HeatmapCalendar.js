@@ -11,7 +11,7 @@
  * See LICENSE file in the project root for full license information.
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import Tooltip from './Tooltip'
@@ -29,28 +29,21 @@ const cellPad = 2
 
 
 const HeatmapCalendar = (props) => {
-  const {data} = props
-  let {startDate, endDate} = props
+  const {data, tooltip, colorForValue} = props
 
   // if start/end aren't provided, use start/end of data
-  startDate = startDate || data[0].date
-  endDate = endDate || data[data.length - 1].date
+  const {
+    startDate = data[0].date,
+    endDate = data[data.length - 1].date
+  } = props
 
   const [hover, setHover] = useState(false)
   const [hoverInfo, setHoverInfo] = useState({})
-
-  useEffect(() => {
-  })
 
   const onMouseOver = (obj) => {
     setHover(true)
     setHoverInfo(obj)
   }
-
-  const onMouseOut = (obj) => {
-    setHover(false)
-  }
-
 
   return (
     <Root>
@@ -64,8 +57,9 @@ const HeatmapCalendar = (props) => {
           xStart={xStart}
           yStart={yStart}
           cellPad={cellPad}
+          colorForValue={colorForValue}
           onMouseOver={obj => onMouseOver(obj)}
-          onMouseOut={obj => onMouseOut(obj)}
+          onMouseOut={() => setHover(false)}
         />
 
         {hover &&
@@ -78,10 +72,14 @@ const HeatmapCalendar = (props) => {
             strokeWidth={cellPad}
           />
         }
-
       </SVG>
 
-      <Tooltip data={hoverInfo} show={hover} offset={cellSize + 4} />
+      <Tooltip
+        data={hoverInfo}
+        show={hover}
+        offset={cellSize + 4}
+        tooltip={tooltip}
+      />
     </Root>
   )
 }

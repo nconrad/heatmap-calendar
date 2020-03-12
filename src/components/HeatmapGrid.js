@@ -1,25 +1,29 @@
 import React from 'react'
 
-import color from './color'
+import {color, getRedColor} from './color'
+
+import {getMinMax, getBins} from './utils'
 
 const months = [
   'Jan', 'Feb', 'March', 'April', 'May', 'June',
   'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
 ]
 
+const defaultBinCount = 4
 
-const defaultColorMap = (value) => {
+const defaultColorMap = (value, bins) => {
   if (!value) return color.noValue
 
-  if (value <= 5)
+  if (value <= bins[0])
     return color.green1
-  else if (value <= 10)
+  else if (value <= bins[1])
     return color.green2
-  else if (value <= 15)
+  else if (value <= bins[2])
     return color.green3
-  else if (value <= 30)
+  else if (value <= bins[3])
     return color.green4
 }
+
 
 const getDates = (startDate, endDate) => {
   const dates = []
@@ -32,7 +36,6 @@ const getDates = (startDate, endDate) => {
 
   return dates
 }
-
 
 // takes array of data objects,
 // returns mapping of date to data object
@@ -64,13 +67,15 @@ const HeatmapGrid = (props) => {
   // optimize by getting mapping of dates to values
   const dateMapping = getDateMapping(data)
 
+  // compute some stats for coloring
+  const {min, max} = getMinMax(data)
+  const bins = getBins(min, max, defaultBinCount)
 
   const n = 7
   const m = numOfWeeks
   let rects = []
   let prevMonth
   let k = 0
-
 
   // for each week of calendar
   for (let j = 0; j < m; j++) {
@@ -83,7 +88,15 @@ const HeatmapGrid = (props) => {
 
       const dayData = dateMapping[date]
       const value = dayData.value || null
-      const color = colorForValue ? colorForValue(value) : defaultColorMap(value)
+
+      let fill
+      if (colorForValue == 'gradient') {
+        fill = getRedColor(value / max)
+      } else if (colorForValue) {
+        fill = colorForValue(value)
+      } else {
+        fill = defaultColorMap(value, bins)
+      }
 
       const x = xStart + j * (cellSize + cellPad)
       const y = yStart + i * (cellSize + cellPad)
@@ -94,7 +107,7 @@ const HeatmapGrid = (props) => {
           y={y}
           width={cellSize}
           height={cellSize}
-          fill={color}
+          fill={fill}
           onMouseOver={() => onMouseOver({x, y, data: dayData})}
           onMouseOut={() => onMouseOut({x, y, data: dayData})}
           key={k}
@@ -111,9 +124,9 @@ const HeatmapGrid = (props) => {
 
       rects.push(ele)
 
-      // render month if new
+      // render month label if new and in first two weeks
       const month = months[date.getMonth()]
-      if (i == 0 && month !== prevMonth) {
+      if (i == 0 && month !== prevMonth && date.getDate() < 15) {
         rects.push(
           <text
             x={x}

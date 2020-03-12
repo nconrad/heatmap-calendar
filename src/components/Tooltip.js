@@ -1,23 +1,37 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
+
+
+const DefaultTooltip = (date, value) => {
+  return (
+    <>
+      {new Date(date).toDateString().slice(0, 10)}<br/>
+       value: {value}
+    </>
+  )
+}
+
 const Tooltip = (props) => {
-  const {show, offset} = props;
+  const {show, offset, tooltip} = props;
   let {x = 0, y = 0, data} = props.data;
 
-  useState(() => {
 
-  }, [x, y])
 
   return (
     <TooltipRoot
-      style={{top: y - offset * 2 - tooltipPad * 2, left: x + offset}}
+      style={{
+        top: y - offset * 2 - tooltipPad * 2,
+        left: x + offset
+      }}
       className={`${show && 'show '}tooltip` }
     >
       {show &&
         <>
-          {new Date(data.date).toDateString().slice(0, 10)}<br/>
-          value: {data.value}
+          {tooltip ?
+            <>{tooltip(data)}</> :
+            <DefaultTooltip date={data.date} value={date.value} />
+          }
         </>
       }
     </TooltipRoot>
@@ -33,6 +47,7 @@ const TooltipRoot = styled.div`
   opacity: 0;
   transition: opacity .5s;
   font-size: 0.9em;
+  z-index: 9999;
 
   &.show {
     opacity: 1.0;
