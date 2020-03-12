@@ -20,12 +20,12 @@ import DayAxis from './DayAxis'
 
 
 // cell defaults
-const size = 20
+const cellSize = 14
 const xStart = 50
 const yStart = 30
 
 const hoverStroke = '#666'
-const cellPad = 3
+const cellPad = 2
 
 
 const HeatmapCalendar = (props) => {
@@ -55,12 +55,12 @@ const HeatmapCalendar = (props) => {
   return (
     <Root>
       <SVG>
-        <DayAxis x={xStart} y={yStart} offset={size + cellPad} />
+        <DayAxis x={xStart} y={yStart} offset={cellSize + cellPad} />
         <Grid
           startDate={startDate}
           endDate={endDate}
           data={data}
-          cellSize={size}
+          cellSize={cellSize}
           xStart={xStart}
           yStart={yStart}
           cellPad={cellPad}
@@ -72,16 +72,16 @@ const HeatmapCalendar = (props) => {
           <HoverBox className="hover-box"
             x={hoverInfo.x - cellPad/2}
             y={hoverInfo.y - cellPad/2}
-            width={size + cellPad}
-            height={size + cellPad}
+            width={cellSize + cellPad}
+            height={cellSize + cellPad}
             stroke={hoverStroke}
-            strokeWidth={2}
+            strokeWidth={cellPad}
           />
         }
 
       </SVG>
 
-      <Tooltip data={hoverInfo} show={hover} offset={size} box={size} />
+      <Tooltip data={hoverInfo} show={hover} offset={cellSize + 4} />
     </Root>
   )
 }

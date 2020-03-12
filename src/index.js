@@ -27,7 +27,7 @@ const getSampleData = (startDate, endDate) => {
 
 const App = () => {
   const start = new Date('01-01-2020')
-  const end = new Date('05-01-2020')
+  const end = new Date('12-31-2020')
   const data = getSampleData(start, end)
 
   return (
@@ -38,10 +38,15 @@ const App = () => {
 }
 
 const Root = styled.div`
-  margin: 5rem auto;
-  width: 75%;
+  margin: 2rem auto;
+  width: 95%;
   border: 1px solid #ccc;
+  display: block;
+  overflow: scroll;
 `
 
+const Calendar = styled(HeatmapCalendar)`
+  overflow: scroll;
+`
 
 render(<App />, document.getElementById('app'));

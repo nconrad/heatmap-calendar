@@ -24,7 +24,7 @@ const Tooltip = (props) => {
   )
 }
 
-const tooltipPad = 10
+const tooltipPad = 8
 const TooltipRoot = styled.div`
   position: absolute;
   background: #666;
@@ -32,6 +32,7 @@ const TooltipRoot = styled.div`
   padding: ${tooltipPad}px;
   opacity: 0;
   transition: opacity .5s;
+  font-size: 0.9em;
 
   &.show {
     opacity: 1.0;

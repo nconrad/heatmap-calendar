@@ -1,3 +1,5 @@
 # heatmap-calendar
 
-Yet another fancy calendar heatmap.
+Yet another heatmap calendar.
+
+![example screenshot](./screenshot.png)

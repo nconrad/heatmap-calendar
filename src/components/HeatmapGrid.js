@@ -2,6 +2,11 @@ import React from 'react'
 
 import color from './color'
 
+const months = [
+  'Jan', 'Feb', 'March', 'April', 'May', 'June',
+  'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+]
+
 
 const defaultColorMap = (value) => {
   if (!value) return color.noValue
@@ -30,7 +35,7 @@ const getDates = (startDate, endDate) => {
 
 
 // takes array of data objects,
-// returns mapping of date to value
+// returns mapping of date to data object
 const getDateMapping = (data) => {
   let mapping = {}
   for (let i = 0; i < data.length; i++) {
@@ -51,6 +56,7 @@ const HeatmapGrid = (props) => {
 
   // get all dates and other stuff between start/end
   const allDates = getDates(startDate, endDate)
+  const numOfDates = allDates.length
   const numOfWeeks =  Math.ceil(allDates.length / 7)
   const startDay = startDate.getDay()
   const endDay = endDate.getDay()
@@ -58,12 +64,15 @@ const HeatmapGrid = (props) => {
   // optimize by getting mapping of dates to values
   const dateMapping = getDateMapping(data)
 
+
   const n = 7
   const m = numOfWeeks
   let rects = []
+  let prevMonth
   let k = 0
 
-  // for each week of week
+
+  // for each week of calendar
   for (let j = 0; j < m; j++) {
 
     // for each day of week
@@ -101,6 +110,24 @@ const HeatmapGrid = (props) => {
         </g> : rect
 
       rects.push(ele)
+
+      // render month if new
+      const month = months[date.getMonth()]
+      if (i == 0 && month !== prevMonth) {
+        rects.push(
+          <text
+            x={x}
+            y={y - 10}
+            fontSize={cellSize / 1.5}
+            key={numOfDates + k}
+          >
+            {month}
+          </text>
+        )
+        prevMonth = month
+      }
+
+
       k += 1
     }
   }
