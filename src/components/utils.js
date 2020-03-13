@@ -23,3 +23,16 @@ export const getBins = (min, max, num, round = true) => {
   bins.push(max)
   return bins
 }
+
+
+export const getDates = (startDate, endDate) => {
+  const dates = []
+  let nextDate = new Date(startDate)
+  while (nextDate <= endDate) {
+    dates.push(nextDate)
+    nextDate = new Date(nextDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+  }
+
+  return dates
+}

@@ -29,12 +29,15 @@ const cellPad = 2
 
 
 const HeatmapCalendar = (props) => {
-  const {data, tooltip, colorForValue} = props
+  const {
+    data, dataKey, tooltip, colorForValue
+  } = props
 
   // if start/end aren't provided, use start/end of data
   const {
     startDate = data[0].date,
-    endDate = data[data.length - 1].date
+    endDate = data[data.length - 1].date,
+    height
   } = props
 
   const [hover, setHover] = useState(false)
@@ -47,12 +50,13 @@ const HeatmapCalendar = (props) => {
 
   return (
     <Root>
-      <SVG>
+      <SVG height={height}>
         <DayAxis x={xStart} y={yStart} offset={cellSize + cellPad} />
         <Grid
           startDate={startDate}
           endDate={endDate}
           data={data}
+          dataKey={dataKey}
           cellSize={cellSize}
           xStart={xStart}
           yStart={yStart}
@@ -60,6 +64,7 @@ const HeatmapCalendar = (props) => {
           colorForValue={colorForValue}
           onMouseOver={obj => onMouseOver(obj)}
           onMouseOut={() => setHover(false)}
+          {...props}
         />
 
         {hover &&
@@ -89,7 +94,6 @@ const Root = styled.div`
 `
 
 const SVG = styled.svg`
-  height: 100%;
   width: 100%;
 `
 

@@ -1,15 +1,14 @@
 import React from 'react'
 
-import {color, getRedColor} from './color'
+import {color, pickColor} from './color'
+import {getMinMax, getBins, getDates} from './utils'
 
-import {getMinMax, getBins} from './utils'
+const defaultBinCount = 4
 
 const months = [
   'Jan', 'Feb', 'March', 'April', 'May', 'June',
   'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
 ]
-
-const defaultBinCount = 4
 
 const defaultColorMap = (value, bins) => {
   if (!value) return color.noValue
@@ -24,25 +23,15 @@ const defaultColorMap = (value, bins) => {
     return color.green4
 }
 
-
-const getDates = (startDate, endDate) => {
-  const dates = []
-  let nextDate = new Date(startDate)
-  while (nextDate <= endDate) {
-    dates.push(nextDate)
-    nextDate = new Date(nextDate);
-    nextDate.setDate(nextDate.getDate() + 1);
-  }
-
-  return dates
-}
-
 // takes array of data objects,
 // returns mapping of date to data object
-const getDateMapping = (data) => {
+const getDateMapping = (data, dataKey = 'value') => {
   let mapping = {}
   for (let i = 0; i < data.length; i++) {
-    mapping[data[i].date] = data[i]
+    mapping[data[i].date] = {
+      ...data[i],
+      value: data[i][dataKey]
+    }
   }
 
   return mapping
@@ -50,9 +39,12 @@ const getDateMapping = (data) => {
 
 const HeatmapGrid = (props) => {
   let {
-    startDate, endDate,  data, cellSize, xStart, yStart, cellPad,
-    colorForValue, showValue, onMouseOver, onMouseOut
+    data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
+    colorForValue, showValue, onMouseOver, onMouseOut,
+    minRGB, maxRGB, emptyRGB, barKey
   } = props
+
+  console.log('barkey', barKey)
 
   // ensure data is sorted
   data.sort((a, b) => a.date - b.date)
@@ -65,10 +57,10 @@ const HeatmapGrid = (props) => {
   const endDay = endDate.getDay()
 
   // optimize by getting mapping of dates to values
-  const dateMapping = getDateMapping(data)
+  const dateMapping = getDateMapping(data, dataKey)
 
   // compute some stats for coloring
-  const {min, max} = getMinMax(data)
+  const {min, max} = getMinMax(data, dataKey)
   const bins = getBins(min, max, defaultBinCount)
 
   const n = 7
@@ -76,9 +68,12 @@ const HeatmapGrid = (props) => {
   let rects = []
   let prevMonth
   let k = 0
+  let histogramTotal = 0
 
   // for each week of calendar
   for (let j = 0; j < m; j++) {
+
+    let weekTotal = 0
 
     // for each day of week
     const i = (j == 0 ? startDay : 0)
@@ -87,15 +82,21 @@ const HeatmapGrid = (props) => {
       const date = allDates[j * n + i - startDay]
 
       const dayData = dateMapping[date]
-      const value = dayData.value || null
+      const val = dayData.value || null
+      weekTotal += val
+
+      if (dayData.barKey) histogramTotal += dayData[dayData.barKey]
+      console.log('histogram', histogramTotal)
 
       let fill
-      if (colorForValue == 'gradient') {
-        fill = getRedColor(value / max)
+      if (!val && colorForValue == 'gradient' && emptyRGB) {
+        fill = `rgb(${emptyRGB.join(',')})`
+      } else if (colorForValue == 'gradient') {
+        fill = pickColor(val / max, minRGB, maxRGB)
       } else if (colorForValue) {
-        fill = colorForValue(value)
+        fill = colorForValue(val)
       } else {
-        fill = defaultColorMap(value, bins)
+        fill = defaultColorMap(val, bins)
       }
 
       const x = xStart + j * (cellSize + cellPad)
@@ -118,7 +119,7 @@ const HeatmapGrid = (props) => {
         <g key={k}>
           {rect}
           <text x={x} y={y + cellSize / 2} fontSize={cellSize / 2}>
-            {value}
+            {val}
           </text>
         </g> : rect
 
@@ -140,8 +141,24 @@ const HeatmapGrid = (props) => {
         prevMonth = month
       }
 
-
       k += 1
+    }
+
+    // render histogram bar if needed
+    if (barKey) {
+      console.log('here')
+      rects.push(
+        <rect
+          x={x}
+          y={y}
+          width={cellSize}
+          height={histogramTotal / max}
+          fill={fill}
+          onMouseOver={() => onMouseOver({x, y, data: dayData})}
+          onMouseOut={() => onMouseOut({x, y, data: dayData})}
+          key={k}
+        />
+      )
     }
   }
 

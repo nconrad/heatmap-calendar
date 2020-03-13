@@ -40,12 +40,7 @@ const App = () => {
 const Root = styled.div`
   margin: 2rem auto;
   width: 95%;
-  border: 1px solid #ccc;
   display: block;
-  overflow: scroll;
-`
-
-const Calendar = styled(HeatmapCalendar)`
   overflow: scroll;
 `
 

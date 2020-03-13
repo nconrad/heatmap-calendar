@@ -23,11 +23,11 @@ function pickHex(color1, color2, weight) {
     return rgb;
 }
 
-const gradientGreenMin = [178, 223, 176]
-const gradientGreenMax = [6, 175, 0]
-const gradientRedMin = [255, 220, 220]
-const gradientRedMax = [165, 0, 0]
+const gradGreenMin = [178, 223, 176]
+const gradGreenMax = [6, 175, 0]
+const gradRedMin = [255, 220, 220]
+const gradRedMax = [165, 0, 0]
 
-export function getRedColor(weight) {
-  return `rgb(${pickHex(gradientRedMax, gradientRedMin, weight).join(',')})`
+export function pickColor(weight, minRGB = gradGreenMin, maxRGB = gradGreenMax) {
+  return `rgb(${pickHex(maxRGB, minRGB, weight).join(',')})`
 }
