@@ -12,7 +12,7 @@ export const color = {
 
 
 // based on less.js functions
-function pickHex(color1, color2, weight) {
+function pickHex(weight, color1, color2) {
     var w1 = weight;
     var w2 = 1 - w1;
     var rgb = [
@@ -29,5 +29,5 @@ const gradRedMin = [255, 220, 220]
 const gradRedMax = [165, 0, 0]
 
 export function pickColor(weight, minRGB = gradGreenMin, maxRGB = gradGreenMax) {
-  return `rgb(${pickHex(maxRGB, minRGB, weight).join(',')})`
+  return `rgb(${pickHex(weight, maxRGB, minRGB).join(',')})`
 }

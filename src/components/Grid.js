@@ -37,14 +37,12 @@ const getDateMapping = (data, dataKey = 'value') => {
   return mapping
 }
 
-const HeatmapGrid = (props) => {
+const Grid = (props) => {
   let {
     data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
     colorForValue, showValue, onMouseOver, onMouseOut,
     minRGB, maxRGB, emptyRGB, barKey
   } = props
-
-  console.log('barkey', barKey)
 
   // ensure data is sorted
   data.sort((a, b) => a.date - b.date)
@@ -86,13 +84,14 @@ const HeatmapGrid = (props) => {
       weekTotal += val
 
       if (dayData.barKey) histogramTotal += dayData[dayData.barKey]
-      console.log('histogram', histogramTotal)
 
       let fill
       if (!val && colorForValue == 'gradient' && emptyRGB) {
         fill = `rgb(${emptyRGB.join(',')})`
       } else if (colorForValue == 'gradient') {
+        console.log('max', max, val, maxRGB, minRGB)
         fill = pickColor(val / max, minRGB, maxRGB)
+        console.log('fill', fill)
       } else if (colorForValue) {
         fill = colorForValue(val)
       } else {
@@ -131,7 +130,7 @@ const HeatmapGrid = (props) => {
         rects.push(
           <text
             x={x}
-            y={y - 10}
+            y={y - 7}
             fontSize={cellSize / 1.5}
             key={numOfDates + k}
           >
@@ -146,7 +145,6 @@ const HeatmapGrid = (props) => {
 
     // render histogram bar if needed
     if (barKey) {
-      console.log('here')
       rects.push(
         <rect
           x={x}
@@ -169,5 +167,5 @@ const HeatmapGrid = (props) => {
   )
 }
 
-export default HeatmapGrid
+export default Grid
 

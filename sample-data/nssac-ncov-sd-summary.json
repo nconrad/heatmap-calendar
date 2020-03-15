@@ -46,8 +46,10 @@
 {"date":"03-06-2020","totalConfirmed":102127,"totalDeaths":3492,"totalRecovered":57367,"newConfirmed":3774,"newDeaths":106,"newRecovered":1996},
 {"date":"03-07-2020","totalConfirmed":106091,"totalDeaths":3597,"totalRecovered":59780,"newConfirmed":3964,"newDeaths":105,"newRecovered":2413},
 {"date":"03-08-2020","totalConfirmed":110044,"totalDeaths":3827,"totalRecovered":61939,"newConfirmed":3953,"newDeaths":230,"newRecovered":2159},
-{"date":"03-09-2020","totalConfirmed":114415,"totalDeaths":4024,"totalRecovered":63803,"newConfirmed":4371,"newDeaths":197,"newRecovered":1864},
-{"date":"03-10-2020","totalConfirmed":118815,"totalDeaths":4286,"totalRecovered":66002,"newConfirmed":4400,"newDeaths":262,"newRecovered":2199},
-{"date":"03-11-2020","totalConfirmed":126093,"totalDeaths":4614,"totalRecovered":66586,"newConfirmed":7278,"newDeaths":328,"newRecovered":584},
-{"date":"03-12-2020","totalConfirmed":131780,"totalDeaths":4920,"totalRecovered":67203,"newConfirmed":5687,"newDeaths":306,"newRecovered":617}
+{"date":"03-09-2020","totalConfirmed":114417,"totalDeaths":4024,"totalRecovered":63803,"newConfirmed":4373,"newDeaths":197,"newRecovered":1864},
+{"date":"03-10-2020","totalConfirmed":118817,"totalDeaths":4286,"totalRecovered":66002,"newConfirmed":4400,"newDeaths":262,"newRecovered":2199},
+{"date":"03-11-2020","totalConfirmed":126095,"totalDeaths":4614,"totalRecovered":66586,"newConfirmed":7278,"newDeaths":328,"newRecovered":584},
+{"date":"03-12-2020","totalConfirmed":133531,"totalDeaths":4952,"totalRecovered":68555,"newConfirmed":7436,"newDeaths":338,"newRecovered":1969},
+{"date":"03-13-2020","totalConfirmed":145613,"totalDeaths":5419,"totalRecovered":71870,"newConfirmed":12082,"newDeaths":467,"newRecovered":3315},
+{"date":"03-14-2020","totalConfirmed":156418,"totalDeaths":5831,"totalRecovered":75737,"newConfirmed":10805,"newDeaths":412,"newRecovered":3867}
 ]

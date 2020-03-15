@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 //import data from '../sample-data/nssac-ncov-sd-summary'
 
-import HeatmapCalendar from './components/HeatmapCalendar'
+import HeatmapCalendar from '../src/HeatmapCalendar'
 
 
 const getSampleData = (startDate, endDate) => {

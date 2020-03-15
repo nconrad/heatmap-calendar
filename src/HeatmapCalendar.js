@@ -14,9 +14,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import Tooltip from './Tooltip'
-import Grid from './HeatmapGrid'
-import DayAxis from './DayAxis'
+import Tooltip from './components/Tooltip'
+import Grid from './components/Grid'
+import DayAxis from './components/DayAxis'
 
 
 // cell defaults

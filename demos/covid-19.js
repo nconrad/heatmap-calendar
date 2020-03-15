@@ -4,7 +4,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import styled from 'styled-components'
 
-import HeatmapCalendar from '../src/components/HeatmapCalendar'
+import HeatmapCalendar from '../src/HeatmapCalendar'
 import summaryData from '../sample-data/nssac-ncov-sd-summary.json'
 
 
@@ -57,7 +57,7 @@ const App = () => {
           <h3>{data[data.length - 1].totalConfirmed} Confirmed Cases</h3>
           <Cal
             dataKey="newConfirmed"
-            tooltip={(obj) => tooltip(obj, 'totalConfirmed',  'New cases', 'Total to date')}
+            //tooltip={(obj) => tooltip(obj, 'totalConfirmed',  'New cases', 'Total to date')}
             minRGB={[200, 230, 255]}
             maxRGB={[0, 90, 165]}
             {...props}

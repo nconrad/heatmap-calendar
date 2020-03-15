@@ -3,7 +3,9 @@ import styled from 'styled-components'
 
 
 
-const DefaultTooltip = (date, value) => {
+const DefaultTooltip = (props) => {
+  const {date, value} = props
+
   return (
     <>
       {new Date(date).toDateString().slice(0, 10)}<br/>
@@ -16,8 +18,6 @@ const Tooltip = (props) => {
   const {show, offset, tooltip} = props;
   let {x = 0, y = 0, data} = props.data;
 
-
-
   return (
     <TooltipRoot
       style={{
@@ -29,8 +29,8 @@ const Tooltip = (props) => {
       {show &&
         <>
           {tooltip ?
-            <>{tooltip(data)}</> :
-            <DefaultTooltip date={data.date} value={date.value} />
+            [tooltip(data)] :
+            <DefaultTooltip date={data.date} value={data.value} />
           }
         </>
       }
