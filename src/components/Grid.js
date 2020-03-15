@@ -41,7 +41,7 @@ const Grid = (props) => {
   let {
     data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
     colorForValue, showValue, onMouseOver, onMouseOut,
-    minRGB, maxRGB, emptyRGB, barKey
+    minRGB, maxRGB, emptyRGB, histogram, histogramKey
   } = props
 
   // ensure data is sorted
@@ -83,15 +83,13 @@ const Grid = (props) => {
       const val = dayData.value || null
       weekTotal += val
 
-      if (dayData.barKey) histogramTotal += dayData[dayData.barKey]
+      if (histogram) histogramTotal += val
 
       let fill
       if (!val && colorForValue == 'gradient' && emptyRGB) {
         fill = `rgb(${emptyRGB.join(',')})`
       } else if (colorForValue == 'gradient') {
-        console.log('max', max, val, maxRGB, minRGB)
         fill = pickColor(val / max, minRGB, maxRGB)
-        console.log('fill', fill)
       } else if (colorForValue) {
         fill = colorForValue(val)
       } else {
@@ -144,17 +142,18 @@ const Grid = (props) => {
     }
 
     // render histogram bar if needed
-    if (barKey) {
+    if (histogram) {
+      const x = xStart + j * (cellSize + cellPad)
+      const y = yStart + i * (cellSize + cellPad)
+
       rects.push(
         <rect
           x={x}
           y={y}
           width={cellSize}
           height={histogramTotal / max}
-          fill={fill}
-          onMouseOver={() => onMouseOver({x, y, data: dayData})}
-          onMouseOut={() => onMouseOut({x, y, data: dayData})}
-          key={k}
+          fill={'#999'}
+          key={numOfDates + k * 999}
         />
       )
     }

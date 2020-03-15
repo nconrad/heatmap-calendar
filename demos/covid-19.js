@@ -20,7 +20,6 @@ const parseData = (data) => {
       ...obj,
       date: new Date(date),
       totalActive: totalConfirmed - totalDeaths - totalRecovered,
-      barKey: totalConfirmed
     }
   })
 }
@@ -57,9 +56,11 @@ const App = () => {
           <h3>{data[data.length - 1].totalConfirmed} Confirmed Cases</h3>
           <Cal
             dataKey="newConfirmed"
-            //tooltip={(obj) => tooltip(obj, 'totalConfirmed',  'New cases', 'Total to date')}
+            tooltip={(obj) => tooltip(obj, 'totalConfirmed',  'New cases', 'Total to date')}
             minRGB={[200, 230, 255]}
             maxRGB={[0, 90, 165]}
+            histogram={true}
+            height={200}
             {...props}
           />
 
@@ -70,6 +71,8 @@ const App = () => {
             tooltip={(obj) => tooltip(obj, 'totalDeaths', 'Deaths', 'Total deaths to date')}
             minRGB={[255, 220, 220]}
             maxRGB={[165, 0, 0]}
+            histogram={true}
+            height={200}
             {...props}
           />
 
@@ -80,6 +83,8 @@ const App = () => {
             tooltip={(obj) => tooltip(obj, 'totalRecovered', 'Recovered', 'Total recovered to date')}
             minRGB={[201, 235, 200]}
             maxRGB={[0, 165, 0]}
+            histogram={true}
+            height={200}
             {...props}
           />
 
@@ -90,6 +95,8 @@ const App = () => {
             tooltip={(obj) => tooltip(obj, 'totalActive',  'Active cases', 'Total active to date')}
             minRGB={[255, 248, 198]}
             maxRGB={[190, 108, 0]}
+            histogram={true}
+            height={200}
             {...props}
           />
 
@@ -109,7 +116,6 @@ const Content = styled.div`
 `
 
 const Cal = styled(HeatmapCalendar)`
-  height: 400px;
 `
 
 
