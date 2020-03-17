@@ -4,6 +4,8 @@ import {color, pickColor} from './color'
 import {getMinMax, getBins, getDates} from './utils'
 
 const defaultBinCount = 4
+const numOfDaysInWeek = 7
+
 
 const months = [
   'Jan', 'Feb', 'March', 'April', 'May', 'June',
@@ -41,7 +43,7 @@ const Grid = (props) => {
   let {
     data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
     colorForValue, showValue, onMouseOver, onMouseOut,
-    minRGB, maxRGB, emptyRGB, histogram, histogramKey
+    minRGB, maxRGB, emptyRGB, histogram
   } = props
 
   // ensure data is sorted
@@ -58,6 +60,7 @@ const Grid = (props) => {
   const dateMapping = getDateMapping(data, dataKey)
 
   // compute some stats for coloring
+
   const {min, max} = getMinMax(data, dataKey)
   const bins = getBins(min, max, defaultBinCount)
 
@@ -69,18 +72,19 @@ const Grid = (props) => {
   let histogramTotal = 0
 
   // for each week of calendar
-  for (let j = 0; j < m; j++) {
+  for (let j = 0; j <= m; j++) {
 
     let weekTotal = 0
 
     // for each day of week
     const i = (j == 0 ? startDay : 0)
-    const end = (j == m - 1 ? endDay + 1 : n)
+    const end = (j == m ? endDay + 1 : n)
+
     for (; i < end; i++) {
       const date = allDates[j * n + i - startDay]
 
       const dayData = dateMapping[date]
-      const val = dayData.value || null
+      const val = dayData.value || null   // value attribute is now dataKey if provided
       weekTotal += val
 
       if (histogram) histogramTotal += val
@@ -144,7 +148,7 @@ const Grid = (props) => {
     // render histogram bar if needed
     if (histogram) {
       const x = xStart + j * (cellSize + cellPad)
-      const y = yStart + i * (cellSize + cellPad)
+      const y = yStart + numOfDaysInWeek * (cellSize + cellPad)
 
       rects.push(
         <rect
