@@ -86,8 +86,7 @@ const Grid = (props) => {
       const dayData = dateMapping[date]
       const val = dayData.value || null   // value attribute is now dataKey if provided
       weekTotal += val
-
-      if (histogram) histogramTotal += val
+      histogramTotal += val
 
       let fill
       if (!val && colorForValue == 'gradient' && emptyRGB) {
@@ -155,7 +154,7 @@ const Grid = (props) => {
           x={x}
           y={y}
           width={cellSize}
-          height={histogramTotal / max}
+          height={weekTotal / max * 10}
           fill={'#999'}
           key={numOfDates + k * 999}
         />
