@@ -7,14 +7,16 @@ const textRightMargin = 5
 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 
-const DayAxis = (props) => {
-  const {x, y, offset} = props
+export default function Axis(props) {
+  const {x, y, offset, data} = props
   const fontSize = offset / 1.5
+
+  const rows = data ? data : days
 
   return (
     <>
       {
-        days.map((day, j) =>
+        rows.map((name, j) =>
           <text
             x={x - textRightMargin}
             y={y + j * offset + (offset / 1.5) + 2}
@@ -22,14 +24,11 @@ const DayAxis = (props) => {
             key={j}
             textAnchor="end"
           >
-            {day}
+            {name}
           </text>
         )
       }
     </>
   )
 }
-
-
-export default DayAxis
 

@@ -2,19 +2,19 @@ import React from 'react'
 
 import {pickColor} from './color'
 import {
-  getMinMax, getBins, getDates,
-  months, defaultColorMap, getDateMapping
+  getLinearMinMax, getBins, getDates,
+  months, defaultColorMap, getLinearDateMap
 } from './utils'
 
 const defaultBinCount = 4
 const numOfDaysInWeek = 7
 
 
-const Grid = (props) => {
+const LinearGrid = (props) => {
   let {
-    data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
+    rows, data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
     colorForValue, showValue, onMouseOver, onMouseOut,
-    minRGB, maxRGB, emptyRGB, histogram, vertical = false
+    minRGB, maxRGB, emptyRGB, histogram
   } = props
 
   // ensure data is sorted
@@ -23,40 +23,39 @@ const Grid = (props) => {
   // get all dates and other stuff between start/end
   const allDates = getDates(startDate, endDate)
   const numOfDates = allDates.length
-  const numOfWeeks =  Math.ceil(allDates.length / 7)
-  const startDay = startDate.getDay()
-  const endDay = endDate.getDay()
+  const numOfDays = allDates.length
 
   // optimize by getting mapping of dates to values
-  const dateMapping = getDateMapping(data, dataKey)
+  const dateMapping = getLinearDateMap(data, dataKey)
 
   // compute some stats for coloring
-
-  const {min, max} = getMinMax(data, dataKey)
+  const {min, max} = getLinearMinMax(data, dataKey)
   const bins = getBins(min, max, defaultBinCount)
 
-  const n = 7
-  const m = numOfWeeks
+  const n = rows.length
+  const m = numOfDays
   let rects = []
   let prevMonth
   let k = 0
   let histogramTotal = 0
 
   // for each week of calendar
-  for (let j = 0; j <= m; j++) {
+  for (let j = 0; j < m; j++) {
 
     let weekTotal = 0
 
-    // for each day of week
-    const i = (j == 0 ? startDay : 0)
-    const end = (j == m ? endDay + 1 : n)
+    // for each row
+    for (let i = 0; i < n; i++) {
 
-    for (; i < end; i++) {
-      const date = allDates[j * n + i - startDay]
-      if (!date) continue;                // todo: this shouldn't be needed!
+      const date = allDates[j]
+      if (!date) continue
 
+      const name = rows[i]
       const dayData = dateMapping[date]
-      const val = dayData.value || null   // value attribute is now dataKey if provided
+
+      const val = (dayData && name in dayData && dataKey in dayData[name])
+        ? dayData[name][dataKey] : null
+
       weekTotal += val
       histogramTotal += val
 
@@ -83,7 +82,7 @@ const Grid = (props) => {
           fill={fill}
           onMouseOver={() => onMouseOver({x, y, data: dayData})}
           onMouseOut={() => onMouseOut({x, y, data: dayData})}
-          key={date}
+          key={i * n + j}
         />
       )
 
@@ -141,5 +140,5 @@ const Grid = (props) => {
   )
 }
 
-export default Grid
+export default LinearGrid
 

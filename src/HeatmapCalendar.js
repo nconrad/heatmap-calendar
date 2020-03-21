@@ -16,21 +16,37 @@ import styled from 'styled-components'
 
 import Tooltip from './components/Tooltip'
 import Grid from './components/Grid'
-import DayAxis from './components/DayAxis'
+import LinearGrid from './components/LinearGrid'
+import Axis from './components/Axis'
 
 
 // cell defaults
 const cellSize = 14
-const xStart = 50
-const yStart = 30
 
 const hoverStroke = '#666'
 const cellPad = 2
 
 
+const getRowNames = (allData) => {
+
+  const rowNames = []
+  for (let j = 0; j < allData.length; j++) {
+    const {data} = allData[j]
+    for (let i = 0; i < data.length; i++) {
+      const {name} = data[i]
+      if (!rowNames.includes(name))
+        rowNames.push(name)
+    }
+  }
+
+  return rowNames
+}
+
 const HeatmapCalendar = (props) => {
   const {
-    data, dataKey, tooltip, colorForValue
+    data, dataKey, tooltip, colorForValue, type,
+    xStart = 50,
+    yStart = 30
   } = props
 
   // if start/end aren't provided, use start/end of data
@@ -39,6 +55,12 @@ const HeatmapCalendar = (props) => {
     endDate = data[data.length - 1].date,
     height
   } = props
+
+  if (typeof startDate == 'string' || typeof endDate == 'string')
+    throw 'The dates (value of `date`) provided must be date objects'
+
+  // if type is linear, we need to figure out all the rows
+  const rowNames = type == 'linear' ? getRowNames(data) : null
 
   const [hover, setHover] = useState(false)
   const [hoverInfo, setHoverInfo] = useState({})
@@ -51,21 +73,54 @@ const HeatmapCalendar = (props) => {
   return (
     <Root>
       <SVG height={height}>
-        <DayAxis x={xStart} y={yStart} offset={cellSize + cellPad} />
-        <Grid
-          startDate={startDate}
-          endDate={endDate}
-          data={data}
-          dataKey={dataKey}
-          cellSize={cellSize}
-          xStart={xStart}
-          yStart={yStart}
-          cellPad={cellPad}
-          colorForValue={colorForValue}
-          onMouseOver={obj => onMouseOver(obj)}
-          onMouseOut={() => setHover(false)}
-          {...props}
-        />
+
+        {
+          !type &&
+          <>
+            <Axis x={xStart} y={yStart} offset={cellSize + cellPad} />
+            <Grid
+              startDate={startDate}
+              endDate={endDate}
+              data={data}
+              dataKey={dataKey}
+              cellSize={cellSize}
+              xStart={xStart}
+              yStart={yStart}
+              cellPad={cellPad}
+              colorForValue={colorForValue}
+              onMouseOver={obj => onMouseOver(obj)}
+              onMouseOut={() => setHover(false)}
+              {...props}
+            />
+          </>
+        }
+
+        {
+          type == 'linear' &&
+          <>
+            <Axis
+              x={xStart}
+              y={yStart}
+              offset={cellSize + cellPad}
+              data={rowNames}
+            />
+            <LinearGrid
+              rows={rowNames}
+              startDate={startDate}
+              endDate={endDate}
+              data={data}
+              dataKey={dataKey}
+              cellSize={cellSize}
+              xStart={xStart}
+              yStart={yStart}
+              cellPad={cellPad}
+              colorForValue={colorForValue}
+              onMouseOver={obj => onMouseOver(obj)}
+              onMouseOut={() => setHover(false)}
+              {...props}
+            />
+          </>
+        }
 
         {hover &&
           <HoverBox className="hover-box"
