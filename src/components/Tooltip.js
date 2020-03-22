@@ -29,7 +29,7 @@ const Tooltip = (props) => {
       {show &&
         <>
           {tooltip ?
-            [tooltip(data)] :
+            [tooltip(props.data)] :
             <DefaultTooltip date={data.date} value={data.value} />
           }
         </>

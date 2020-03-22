@@ -7,7 +7,6 @@ import {
 } from './utils'
 
 const defaultBinCount = 4
-const numOfDaysInWeek = 7
 
 
 const LinearGrid = (props) => {
@@ -73,6 +72,7 @@ const LinearGrid = (props) => {
       const x = xStart + j * (cellSize + cellPad)
       const y = yStart + i * (cellSize + cellPad)
 
+      const hoverData = {x, y, data: dayData, name, date, value: val}
       const rect = (
         <rect
           x={x}
@@ -80,8 +80,8 @@ const LinearGrid = (props) => {
           width={cellSize}
           height={cellSize}
           fill={fill}
-          onMouseOver={() => onMouseOver({x, y, data: dayData})}
-          onMouseOut={() => onMouseOut({x, y, data: dayData})}
+          onMouseOver={() => onMouseOver(hoverData)}
+          onMouseOut={() => onMouseOut(hoverData)}
           key={i * n + j}
         />
       )
