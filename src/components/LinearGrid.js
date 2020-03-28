@@ -9,12 +9,11 @@ import {
 const defaultBinCount = 4
 
 
-const LinearGrid = (props) => {
-  let {
-    rows, data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
-    colorForValue, showValue, onMouseOver, onMouseOut,
-    minRGB, maxRGB, emptyRGB, histogram
-  } = props
+const LinearGrid = React.memo(({
+  rows, data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
+  colorForValue, showValue, onMouseOver, onMouseOut,
+  minRGB, maxRGB, emptyRGB, histogram
+} ) => {
 
   // ensure data is sorted
   data.sort((a, b) => a.date - b.date)
@@ -80,9 +79,10 @@ const LinearGrid = (props) => {
           width={cellSize}
           height={cellSize}
           fill={fill}
+          className="cell"
           onMouseOver={() => onMouseOver(hoverData)}
           onMouseOut={() => onMouseOut(hoverData)}
-          key={i * n + j}
+          key={`${date}-${name}`}
         />
       )
 
@@ -138,7 +138,7 @@ const LinearGrid = (props) => {
       {rects}
     </>
   )
-}
+}, () => false)
 
 export default LinearGrid
 

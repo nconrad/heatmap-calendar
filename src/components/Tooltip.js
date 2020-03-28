@@ -24,12 +24,12 @@ const Tooltip = (props) => {
         top: y - offset * 2 - tooltipPad * 2,
         left: x + offset
       }}
-      className={`${show && 'show '}tooltip` }
+      className={`${show && 'show '} tooltip` }
     >
       {show &&
         <>
           {tooltip ?
-            [tooltip(props.data)] :
+            <div key={`${data.date}-${data.name}`}>{tooltip(props.data)}</div> :
             <DefaultTooltip date={data.date} value={data.value} />
           }
         </>

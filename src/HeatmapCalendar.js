@@ -14,17 +14,11 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import Tooltip from './components/Tooltip'
 import Grid from './components/Grid'
 import LinearGrid from './components/LinearGrid'
 import Axis from './components/Axis'
+import Tooltip from './components/Tooltip'
 
-
-// cell defaults
-const cellSize = 14
-
-const hoverStroke = '#666'
-const cellPad = 2
 
 
 const getRowNames = (allData) => {
@@ -42,11 +36,17 @@ const getRowNames = (allData) => {
   return rowNames
 }
 
+
 const HeatmapCalendar = (props) => {
+
   const {
-    data, dataKey, tooltip, colorForValue, type,
+    data, dataKey, colorForValue, type,
+    cellSize = 14,
+    cellPad = 2,
     xStart = 50,
-    yStart = 30
+    yStart = 30,
+    hoverStroke = '#666',
+    tooltip
   } = props
 
   // if start/end aren't provided, use start/end of data
@@ -66,6 +66,7 @@ const HeatmapCalendar = (props) => {
   const [hoverInfo, setHoverInfo] = useState({})
 
   const onMouseOver = (obj) => {
+
     setHover(true)
     setHoverInfo(obj)
   }
@@ -129,7 +130,7 @@ const HeatmapCalendar = (props) => {
             width={cellSize + cellPad}
             height={cellSize + cellPad}
             stroke={hoverStroke}
-            strokeWidth={cellPad}
+            strokeWidth={cellPad || 1}
           />
         }
       </SVG>
