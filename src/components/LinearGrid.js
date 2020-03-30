@@ -10,7 +10,7 @@ const defaultBinCount = 4
 
 
 const LinearGrid = React.memo(({
-  rows, data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
+  rows, data, dataKey, startDate, endDate, cellH, cellW, xStart, yStart, cellPad,
   colorForValue, showValue, onMouseOver, onMouseOut,
   minRGB, maxRGB, emptyRGB, histogram, displayTotals
 }) => {
@@ -68,16 +68,16 @@ const LinearGrid = React.memo(({
         fill = defaultColorMap(val, bins)
       }
 
-      const x = xStart + j * (cellSize + cellPad)
-      const y = yStart + i * (cellSize + cellPad)
+      const x = xStart + j * (cellW + cellPad)
+      const y = yStart + i * (cellH + cellPad)
 
       const hoverData = {x, y, data: dayData, name, date, value: val}
       const rect = (
         <rect
           x={x}
           y={y}
-          width={cellSize}
-          height={cellSize}
+          width={cellW}
+          height={cellH}
           fill={fill}
           className="cell"
           onMouseOver={() => onMouseOver(hoverData)}
@@ -89,7 +89,7 @@ const LinearGrid = React.memo(({
       const ele = showValue ?
         <g key={k}>
           {rect}
-          <text x={x} y={y + cellSize / 2} fontSize={cellSize / 2}>
+          <text x={x} y={y + cellH / 2} fontSize={cellH / 2}>
             {val}
           </text>
         </g> : rect
@@ -103,7 +103,7 @@ const LinearGrid = React.memo(({
           <text
             x={x}
             y={y - 7}
-            fontSize={cellSize / 1.5}
+            fontSize={cellH / 1.5}
             key={numOfDates + k}
           >
             {month}
@@ -117,14 +117,14 @@ const LinearGrid = React.memo(({
 
     // render histogram bar if needed
     if (histogram) {
-      const x = xStart + j * (cellSize + cellPad)
-      const y = yStart + numOfDaysInWeek * (cellSize + cellPad)
+      const x = xStart + j * (cellH + cellPad)
+      const y = yStart + numOfDaysInWeek * (cellW + cellPad)
 
       rects.push(
         <rect
           x={x}
           y={y}
-          width={cellSize}
+          width={cellW}
           height={weekTotal / max * 10}
           fill={'#999'}
           key={numOfDates + k * 999}

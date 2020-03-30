@@ -41,7 +41,8 @@ const HeatmapCalendar = (props) => {
 
   const {
     data, dataKey, colorForValue, type,
-    cellSize = 14,
+    cellW = 15,
+    cellH = 15,
     cellPad = 2,
     xStart = 50,
     yStart = 30,
@@ -70,19 +71,6 @@ const HeatmapCalendar = (props) => {
     setHoverInfo(obj)
   }
 
-  const onSVGMouseOver = () => {
-    const target = event.target
-    if (target.tagName != 'rect') return
-
-    // const {clientX: x, clientY: y} = event
-    // console.dir(target)
-    const data = JSON.parse(target.dataset.hov)
-
-    setHover(true)
-    setHoverInfo(data)
-  }
-
-
   return (
     <Root>
       <SVG height={height}>
@@ -90,15 +78,16 @@ const HeatmapCalendar = (props) => {
         {
           !type &&
           <>
-            <Axis x={xStart} y={yStart} offset={cellSize + cellPad} />
+            <Axis x={xStart} y={yStart} offset={cellH + cellPad} />
             <Grid
               startDate={startDate}
               endDate={endDate}
               data={data}
               dataKey={dataKey}
-              cellSize={cellSize}
               xStart={xStart}
               yStart={yStart}
+              cellW={cellW}
+              cellH={cellH}
               cellPad={cellPad}
               colorForValue={colorForValue}
               onMouseOver={obj => onMouseOver(obj)}
@@ -114,7 +103,7 @@ const HeatmapCalendar = (props) => {
             <Axis
               x={xStart}
               y={yStart}
-              offset={cellSize + cellPad}
+              offset={cellH + cellPad}
               data={rowNames}
             />
             <LinearGrid
@@ -123,9 +112,10 @@ const HeatmapCalendar = (props) => {
               endDate={endDate}
               data={data}
               dataKey={dataKey}
-              cellSize={cellSize}
               xStart={xStart}
               yStart={yStart}
+              cellW={cellW}
+              cellH={cellH}
               cellPad={cellPad}
               colorForValue={colorForValue}
               onMouseOver={obj => onMouseOver(obj)}
@@ -139,8 +129,8 @@ const HeatmapCalendar = (props) => {
           <HoverBox className="hover-box"
             x={hoverInfo.x - cellPad/2}
             y={hoverInfo.y - cellPad/2}
-            width={cellSize + cellPad}
-            height={cellSize + cellPad}
+            width={cellW + cellPad}
+            height={cellH + cellPad}
             stroke={hoverStroke}
             strokeWidth={cellPad || 1}
           />
@@ -150,7 +140,7 @@ const HeatmapCalendar = (props) => {
       <Tooltip
         data={hoverInfo}
         show={hover}
-        offset={cellSize + 4}
+        offset={18}
         tooltip={tooltip}
       />
 
