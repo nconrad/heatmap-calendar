@@ -9,12 +9,130 @@ import {
 const defaultBinCount = 4
 
 
+const getGrid = ({n, xStart, yStart, xEnd, cellH, cellPad}) => {
+  const lines = []
+
+  // for each row
+  for (let i = 0; i <= n; i++) {
+    const x = xStart
+    const y = yStart + i * (cellH + cellPad)
+
+    lines.push(
+      <line
+        x1={0}
+        y1={y}
+        x2={x + xEnd}
+        y2={y}
+        strokeWidth={1}
+        stroke="#eee"
+        key={`gl-${i}`}
+      />
+    )
+  }
+
+  return (
+    <g key="grid" className="grid">
+      {lines}
+    </g>
+  )
+}
+
+
+const timeAxis = ({
+  m, xStart, yStart, allDates, cellW, cellH,
+  showDays, showDayOrdinal, cellPad, showGrid, yEnd
+}) => {
+  const eles = []
+
+  const numOfDates = allDates.length
+  const fontSize = cellH / 1.5
+
+  const y = yStart
+
+  let prevMonth
+
+  // for day of calendar
+  for (let j = 0; j < m; j++) {
+    const date = allDates[j]
+    if (!date) continue
+
+    const x = xStart + j * (cellW + cellPad)
+    const dateOfMonth = date.getDate()
+
+    // add month label if new and in first two weeks
+    const month = months[date.getMonth()]
+    if (month !== prevMonth && dateOfMonth < 15) {
+      eles.push(
+        <text
+          x={x}
+          y={y - 7}
+          fontSize={fontSize}
+          fontWeight="bold"
+          key={numOfDates + j}
+        >
+          {month}
+        </text>
+      )
+      prevMonth = month
+    }
+
+    // add month label if new and in first two weeks
+    if (dateOfMonth != 1 && showDays && dateOfMonth % 7 == 0 ) {
+      eles.push(
+        <text
+          x={x}
+          y={y - 7}
+          fontSize={fontSize}
+          key={`${date}-ordinal`}
+        >
+          {dateOfMonth}{showDayOrdinal && nth(dateOfMonth)}
+        </text>
+      )
+      eles.push(
+        <line
+          x1={x}
+          y1={y - 4}
+          x2={x}
+          y2={y}
+          strokeWidth={1}
+          stroke="#aaa"
+          key={date}
+        />
+      )
+
+      if (showGrid) {
+        eles.push(
+          <line
+            x1={x}
+            y1={y}
+            x2={x}
+            y2={yEnd + yStart }
+            strokeWidth={1}
+            stroke="#333"
+            strokeDasharray="5,3"
+            key={`timeaxis-line-${j}`}
+          />
+        )
+      }
+      prevMonth = month
+    }
+  }
+
+  return (
+    <g key="time-axis" className="time-axis">
+      {eles}
+    </g>
+  )
+}
+
+
 const LinearGrid = React.memo(({
   rows, data, dataKey, startDate, endDate, cellH, cellW, xStart, yStart, cellPad,
   colorForValue, showValue, onMouseOver, onMouseOut,
   minRGB, maxRGB, emptyRGB, histogram, displayTotals,
   showDays = true,
-  showDayOrdinal = true
+  showDayOrdinal = true,
+  showGrid = true
 }) => {
 
   // ensure data is sorted
@@ -35,7 +153,6 @@ const LinearGrid = React.memo(({
   const n = rows.length
   const m = numOfDays
   let rects = []
-  let prevMonth
   let k = 0
   let histogramTotal = 0
 
@@ -98,43 +215,8 @@ const LinearGrid = React.memo(({
         </g> : rect
 
       rects.push(ele)
-
-      // render month label if new and in first two weeks
-      const month = months[date.getMonth()]
-      if (i == 0 && month !== prevMonth && dateOfMonth < 15) {
-        rects.push(
-          <text
-            x={x}
-            y={y - 7}
-            fontSize={cellH / 1.5}
-            fontWeight="bold"
-            key={numOfDates + k}
-          >
-            {month}
-          </text>
-        )
-        prevMonth = month
-      }
-
-      // render month label if new and in first two weeks
-      if (i == 0 && dateOfMonth != 1 && showDays && dateOfMonth % 7 == 0 ) {
-        rects.push(
-          <text
-            x={x}
-            y={y - 7}
-            fontSize={cellH / 1.5}
-            key={numOfDates + k}
-          >
-            {dateOfMonth}{showDayOrdinal && nth(dateOfMonth)}
-          </text>
-        )
-        prevMonth = month
-      }
-
       k += 1
     }
-
-
 
     // render histogram bar if needed
     if (histogram) {
@@ -154,9 +236,23 @@ const LinearGrid = React.memo(({
     }
   }
 
+  let dayAxis = timeAxis({
+    m, xStart, yStart, allDates, cellW, cellH,
+    showDays, showDayOrdinal, cellPad, showGrid,
+    yEnd: rows.length * cellH
+  })
+
+  let grid
+  if (showGrid) {
+    grid = getGrid({
+      n, xStart, yStart, cellH, cellPad,
+      xEnd: numOfDays * cellW
+    })
+  }
+
   return (
     <>
-      {rects}
+      {[...rects, grid, dayAxis]}
     </>
   )
 }, (prev, next) =>  prev.dataKey == next.dataKey)
