@@ -8,13 +8,18 @@ import {
 
 const defaultBinCount = 4
 
+// summary table column width
+const colWidth = 70
 
-const getGrid = ({n, xStart, yStart, xEnd, cellH, cellPad}) => {
+const getGrid = ({
+  n, xStart, yStart, xEnd, cellH, cellPad,
+  displayTotals = []
+}) => {
   const lines = []
 
   // for each row
   for (let i = 0; i <= n; i++) {
-    const x = xStart
+    const x = xStart + displayTotals.length * colWidth
     const y = yStart + i * (cellH + cellPad)
 
     lines.push(
@@ -121,6 +126,73 @@ const timeAxis = ({
   return (
     <g key="time-axis" className="time-axis">
       {eles}
+    </g>
+  )
+}
+
+const summaryTable = ({
+  rows, info, xStart, yStart, cellH,
+  cellPad, xEnd, displayTotals
+}) => {
+
+  const fontSize = cellH / 1.5
+
+  // first process data
+  let tableData = {}
+  for (let i = 0; i < rows.length; i++) {
+    const name = rows[i]
+    const sumData = info.filter(obj => obj.name == name)[0]
+
+    let obj = {}
+    displayTotals.forEach(field => {
+      obj[field] = sumData ? sumData[field] : 0
+    })
+
+    tableData[name] = obj
+  }
+
+  // table header
+  const header = displayTotals.map((field, j) =>
+    <text
+      x={xStart + xEnd + j * colWidth + colWidth}
+      y={yStart - cellH/ 2+ 2}
+      fontSize={fontSize}
+      textAnchor="end"
+      key={`summary-th-${name}-${field}`}
+    >
+      {field}
+    </text>
+  )
+
+  // the summary table
+  let table = []
+  for (let i = 0; i < rows.length; i++) {
+    for (let j = 0; j < displayTotals.length; j++) {
+      const x = xStart + xEnd + j * colWidth + colWidth
+
+      const offset = cellH + cellPad
+      const y = yStart + i * offset + offset / 1.5 + 2
+
+      const name = rows[i]
+      const field = displayTotals[j]
+
+      table.push(
+        <text
+          x={x}
+          y={y}
+          fontSize={fontSize}
+          textAnchor="end"
+          key={`${name}-${field}`}
+        >
+          {tableData[name][field] ? tableData[name][field].toLocaleString() : tableData[name][field]}
+        </text>
+      )
+    }
+  }
+
+  return (
+    <g key="summary-table" className="time-axis">
+      {[...header, table]}
     </g>
   )
 }
@@ -245,14 +317,25 @@ const LinearGrid = React.memo(({
   let grid
   if (showGrid) {
     grid = getGrid({
-      n, xStart, yStart, cellH, cellPad,
+      n, xStart, yStart, cellH, cellPad, displayTotals,
       xEnd: numOfDays * cellW
     })
   }
 
+
+  let sumTable
+  if (displayTotals) {
+    sumTable = summaryTable({
+      rows, info: data[data.length - 1].data,
+      xStart, yStart, cellH, cellPad, displayTotals,
+      xEnd: numOfDays * cellW
+    })
+  }
+
+
   return (
     <>
-      {[...rects, grid, dayAxis]}
+      {[...rects, grid, dayAxis, sumTable]}
     </>
   )
 }, (prev, next) =>  prev.dataKey == next.dataKey)
