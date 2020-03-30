@@ -41,7 +41,6 @@ const Root = styled.div`
   margin: 2rem auto;
   width: 95%;
   display: block;
-  overflow: scroll;
 `
 
 render(<App />, document.getElementById('app'));

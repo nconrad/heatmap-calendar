@@ -16,7 +16,7 @@ const DefaultTooltip = (props) => {
 
 const Tooltip = (props) => {
   const {show, offset, tooltip} = props;
-  let {x = 0, y = 0, data} = props.data;
+  let {x = 0, y = 0, date, name, value} = props.data;
 
   return (
     <TooltipRoot
@@ -29,8 +29,8 @@ const Tooltip = (props) => {
       {show &&
         <>
           {tooltip ?
-            <div key={`${data.date}-${data.name}`}>{tooltip(props.data)}</div> :
-            <DefaultTooltip date={data.date} value={data.value} />
+            <div key={`${date}-${name}`}>{tooltip(props.data)}</div> :
+            <DefaultTooltip date={date} value={value} />
           }
         </>
       }
@@ -48,6 +48,7 @@ const TooltipRoot = styled.div`
   transition: opacity .5s;
   font-size: 0.9em;
   z-index: 9999;
+  white-space: nowrap;
 
   &.show {
     opacity: 1.0;

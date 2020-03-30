@@ -66,10 +66,22 @@ const HeatmapCalendar = (props) => {
   const [hoverInfo, setHoverInfo] = useState({})
 
   const onMouseOver = (obj) => {
-
     setHover(true)
     setHoverInfo(obj)
   }
+
+  const onSVGMouseOver = () => {
+    const target = event.target
+    if (target.tagName != 'rect') return
+
+    // const {clientX: x, clientY: y} = event
+    // console.dir(target)
+    const data = JSON.parse(target.dataset.hov)
+
+    setHover(true)
+    setHoverInfo(data)
+  }
+
 
   return (
     <Root>
@@ -141,6 +153,7 @@ const HeatmapCalendar = (props) => {
         offset={cellSize + 4}
         tooltip={tooltip}
       />
+
     </Root>
   )
 }

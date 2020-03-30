@@ -10,12 +10,11 @@ const defaultBinCount = 4
 const numOfDaysInWeek = 7
 
 
-const Grid = (props) => {
-  let {
+const Grid = React.memo(({
     data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
     colorForValue, showValue, onMouseOver, onMouseOut,
     minRGB, maxRGB, emptyRGB, histogram, vertical = false
-  } = props
+  }) => {
 
   // ensure data is sorted
   data.sort((a, b) => a.date - b.date)
@@ -139,7 +138,7 @@ const Grid = (props) => {
       {rects}
     </>
   )
-}
+}, (prev, next) =>  prev.dataKey == next.dataKey)
 
 export default Grid
 

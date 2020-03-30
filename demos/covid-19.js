@@ -109,7 +109,6 @@ const App = () => {
 const Root = styled.div`
   margin: 2rem auto;
   width: 95%;
-  overflow: scroll;
 `
 
 const Content = styled.div`

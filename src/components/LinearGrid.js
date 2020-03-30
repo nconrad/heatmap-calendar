@@ -12,8 +12,8 @@ const defaultBinCount = 4
 const LinearGrid = React.memo(({
   rows, data, dataKey, startDate, endDate, cellSize, xStart, yStart, cellPad,
   colorForValue, showValue, onMouseOver, onMouseOut,
-  minRGB, maxRGB, emptyRGB, histogram
-} ) => {
+  minRGB, maxRGB, emptyRGB, histogram, displayTotals
+}) => {
 
   // ensure data is sorted
   data.sort((a, b) => a.date - b.date)
@@ -138,7 +138,8 @@ const LinearGrid = React.memo(({
       {rects}
     </>
   )
-}, () => false)
+}, (prev, next) =>  prev.dataKey == next.dataKey)
+
 
 export default LinearGrid
 
