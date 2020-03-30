@@ -12,7 +12,9 @@ const defaultBinCount = 4
 const LinearGrid = React.memo(({
   rows, data, dataKey, startDate, endDate, cellH, cellW, xStart, yStart, cellPad,
   colorForValue, showValue, onMouseOver, onMouseOut,
-  minRGB, maxRGB, emptyRGB, histogram, displayTotals
+  minRGB, maxRGB, emptyRGB, histogram, displayTotals,
+  showDays = true,
+  showDayOrdinal = true
 }) => {
 
   // ensure data is sorted
@@ -37,7 +39,7 @@ const LinearGrid = React.memo(({
   let k = 0
   let histogramTotal = 0
 
-  // for each week of calendar
+  // for day of calendar
   for (let j = 0; j < m; j++) {
 
     let weekTotal = 0
@@ -48,6 +50,7 @@ const LinearGrid = React.memo(({
       const date = allDates[j]
       if (!date) continue
 
+      const dateOfMonth = date.getDate()
       const name = rows[i]
       const dayData = dateMapping[date]
 
@@ -98,12 +101,13 @@ const LinearGrid = React.memo(({
 
       // render month label if new and in first two weeks
       const month = months[date.getMonth()]
-      if (i == 0 && month !== prevMonth && date.getDate() < 15) {
+      if (i == 0 && month !== prevMonth && dateOfMonth < 15) {
         rects.push(
           <text
             x={x}
             y={y - 7}
             fontSize={cellH / 1.5}
+            fontWeight="bold"
             key={numOfDates + k}
           >
             {month}
@@ -112,8 +116,25 @@ const LinearGrid = React.memo(({
         prevMonth = month
       }
 
+      // render month label if new and in first two weeks
+      if (i == 0 && dateOfMonth != 1 && showDays && dateOfMonth % 7 == 0 ) {
+        rects.push(
+          <text
+            x={x}
+            y={y - 7}
+            fontSize={cellH / 1.5}
+            key={numOfDates + k}
+          >
+            {dateOfMonth}{showDayOrdinal && nth(dateOfMonth)}
+          </text>
+        )
+        prevMonth = month
+      }
+
       k += 1
     }
+
+
 
     // render histogram bar if needed
     if (histogram) {
@@ -139,6 +160,12 @@ const LinearGrid = React.memo(({
     </>
   )
 }, (prev, next) =>  prev.dataKey == next.dataKey)
+
+
+// https://stackoverflow.com/a/39466341
+function nth(n) {
+  return ["st","nd","rd"][((n+90)%100-10)%10-1] || "th"
+}
 
 
 export default LinearGrid
