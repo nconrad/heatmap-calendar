@@ -18,8 +18,6 @@ import Grid from './components/Grid'
 import LinearGrid from './components/LinearGrid'
 import Axis from './components/Axis'
 import Tooltip from './components/Tooltip'
-import { unstable_renderSubtreeIntoContainer } from 'react-dom'
-
 
 
 const getRowNames = (allData) => {
@@ -74,7 +72,8 @@ const HeatmapCalendar = (props) => {
   }
 
   const onMouseOut = () => {
-    if (event.relatedTarget.classList.contains('hover-box'))
+    const tgt = event.relatedTarget
+    if (tgt && tgt.classList.contains('hover-box'))
       return
 
     setHover(false)
@@ -82,7 +81,7 @@ const HeatmapCalendar = (props) => {
 
   return (
     <Root>
-      <SVG height={height}>
+      <SVG height={height} onMouseOut={onMouseOut}>
 
         {
           !type &&
@@ -109,12 +108,6 @@ const HeatmapCalendar = (props) => {
         {
           type == 'linear' &&
           <>
-            <Axis
-              x={xStart}
-              y={yStart}
-              offset={cellH + cellPad}
-              data={rowNames}
-            />
             <LinearGrid
               rows={rowNames}
               startDate={startDate}
