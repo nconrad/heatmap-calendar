@@ -69,10 +69,11 @@ const timeAxis = ({
     if (month !== prevMonth && dateOfMonth < 15) {
       eles.push(
         <text
-          x={x}
+          x={x + cellW / 2}
           y={y - 7}
           fontSize={fontSize}
           fontWeight="bold"
+          // transform={`rotate(-30,${x + cellW / 2},${y-7})`}
           key={numOfDates + j}
         >
           {month}
@@ -156,7 +157,7 @@ const summaryTable = ({
     <text
       x={xStart + xEnd + j * colWidth + colWidth}
       y={yStart - cellH/ 2+ 2}
-      fontSize={fontSize}
+      fontSize={cellH / 1.3}
       textAnchor="end"
       key={`summary-th-${name}-${field}`}
     >

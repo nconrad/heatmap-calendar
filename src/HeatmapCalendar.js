@@ -18,6 +18,7 @@ import Grid from './components/Grid'
 import LinearGrid from './components/LinearGrid'
 import Axis from './components/Axis'
 import Tooltip from './components/Tooltip'
+import { unstable_renderSubtreeIntoContainer } from 'react-dom'
 
 
 
@@ -66,9 +67,17 @@ const HeatmapCalendar = (props) => {
   const [hover, setHover] = useState(false)
   const [hoverInfo, setHoverInfo] = useState({})
 
+
   const onMouseOver = (obj) => {
     setHover(true)
     setHoverInfo(obj)
+  }
+
+  const onMouseOut = () => {
+    if (event.relatedTarget.classList.contains('hover-box'))
+      return
+
+    setHover(false)
   }
 
   return (
@@ -119,7 +128,7 @@ const HeatmapCalendar = (props) => {
               cellPad={cellPad}
               colorForValue={colorForValue}
               onMouseOver={obj => onMouseOver(obj)}
-              onMouseOut={() => setHover(false)}
+              onMouseOut={() => onMouseOut()}
               {...props}
             />
           </>
