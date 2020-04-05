@@ -140,13 +140,13 @@ const timeAxis = ({
       prevMonth = month
     }
 
-    // add month label if new and in first two weeks
+    // add day ordinals
     if (dateOfMonth != 1 && showDays && dateOfMonth % 7 == 0 ) {
       eles.push(
         <text
           x={x}
           y={y - 7}
-          fontSize={fontSize}
+          fontSize={fontSize / 1.3}
           key={`${date}-ordinal`}
         >
           {dateOfMonth}{showDayOrdinal && nth(dateOfMonth)}
