@@ -1,3 +1,6 @@
+
+import {color} from './color'
+
 export function getMinMax(data, key = 'value') {
   let max = 0, min = 0
   let l = data.length
@@ -78,7 +81,8 @@ export function defaultColorMap(value, bins) {
 export function getDateMapping(data, dataKey = 'value') {
   let mapping = {}
   for (let i = 0; i < data.length; i++) {
-    mapping[data[i].date] = {
+    const date = data[i].date.toDateString()
+    mapping[date] = {
       ...data[i],
       value: data[i][dataKey]
     }
@@ -92,7 +96,7 @@ export function getLinearDateMap(data) {
   let mapping = {}
   for (let j = 0; j < data.length; j++) {
     const obj = data[j]
-    const date = obj.date
+    const date = obj.date.toDateString()
     const objs = obj.data
     if (!(date in mapping))
       mapping[date] = {}

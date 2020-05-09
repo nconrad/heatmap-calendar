@@ -2,17 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 
 
+const DefaultTooltip = ({date, value}) =>
+  <>
+    {new Date(date).toDateString().slice(0, 10)}<br/>
+     value: {value}
+  </>
 
-const DefaultTooltip = (props) => {
-  const {date, value} = props
-
-  return (
-    <>
-      {new Date(date).toDateString().slice(0, 10)}<br/>
-       value: {value}
-    </>
-  )
-}
 
 const Tooltip = (props) => {
   const {show, offset, tooltip, tooltipOutline} = props;

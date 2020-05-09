@@ -12,8 +12,8 @@ const numOfDaysInWeek = 7
 
 const Grid = React.memo(({
     data, dataKey, startDate, endDate, cellH, cellW, xStart, yStart, cellPad,
-    colorForValue, showValue, onMouseOver, onMouseOut,
-    minRGB, maxRGB, emptyRGB, histogram, vertical = false
+    colorForValue, showValue, onMouseOver, onMouseOut, onClick,
+    minRGB, maxRGB, emptyRGB, histogram, histogramHeight, vertical = false
   }) => {
 
   // ensure data is sorted
@@ -28,7 +28,6 @@ const Grid = React.memo(({
 
   // optimize by getting mapping of dates to values
   const dateMapping = getDateMapping(data, dataKey)
-
   // compute some stats for coloring
 
   const {min, max} = getMinMax(data, dataKey)
@@ -54,8 +53,9 @@ const Grid = React.memo(({
       const date = allDates[j * n + i - startDay]
       if (!date) continue;                // todo: this shouldn't be needed!
 
-      const dayData = dateMapping[date]
-      const val = dayData.value || null   // value attribute is now dataKey if provided
+      const dayData = dateMapping[date.toDateString()]
+      const val = dayData ? dayData.value : null   // value attribute is now dataKey if provided
+
       weekTotal += val
       histogramTotal += val
 
@@ -73,6 +73,15 @@ const Grid = React.memo(({
       const x = xStart + j * (cellW + cellPad)
       const y = yStart + i * (cellH + cellPad)
 
+      const evtData = {
+        x, y,
+        data: dayData,
+        name,
+        date,
+        value: val,
+        fill
+      }
+
       const rect = (
         <rect
           x={x}
@@ -80,8 +89,9 @@ const Grid = React.memo(({
           width={cellW}
           height={cellH}
           fill={fill}
-          onMouseOver={() => onMouseOver({x, y, data: dayData})}
-          onMouseOut={() => onMouseOut({x, y, data: dayData})}
+          onClick={() => onClick(evtData)}
+          onMouseOver={() => onMouseOver(evtData)}
+          onMouseOut={() => onMouseOut(evtData)}
           key={date}
         />
       )
@@ -122,6 +132,7 @@ const Grid = React.memo(({
 
       rects.push(
         <rect
+          key={`hist-${x}`}
           x={x}
           y={y}
           width={cellW}

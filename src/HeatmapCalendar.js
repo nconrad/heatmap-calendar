@@ -42,6 +42,7 @@ const HeatmapCalendar = (props) => {
     data, dataKey, colorForValue, type,
     cellW = 15,
     cellH = 15,
+    height = 225,
     cellPad = 2,
     xStart = 50,
     yStart = 30,
@@ -54,7 +55,6 @@ const HeatmapCalendar = (props) => {
   const {
     startDate = data[0].date,
     endDate = data[data.length - 1].date,
-    height
   } = props
 
   if (typeof startDate == 'string' || typeof endDate == 'string')
