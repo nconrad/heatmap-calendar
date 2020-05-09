@@ -46,7 +46,8 @@ const HeatmapCalendar = (props) => {
     xStart = 50,
     yStart = 30,
     hoverStroke = '#666',
-    tooltip
+    tooltip,
+    tooltipOutline
   } = props
 
   // if start/end aren't provided, use start/end of data
@@ -144,6 +145,7 @@ const HeatmapCalendar = (props) => {
         show={hover}
         offset={18}
         tooltip={tooltip}
+        tooltipOutline={tooltipOutline}
       />
 
     </Root>

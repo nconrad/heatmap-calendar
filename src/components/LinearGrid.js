@@ -15,7 +15,7 @@ const caretUp = (x, y) => <path d={`M${x+4} ${y-6} L${x} ${y} L${x+8} ${y} Z`} /
 const defaultBinCount = 4
 
 // summary table column width
-const colWidth = 70
+const colWidth = 80
 
 const getGrid = ({
   n, xStart, yStart, xEnd, cellH, cellPad,
@@ -115,24 +115,35 @@ const timeAxis = ({
     // add month label if new and in first two weeks
     const month = months[date.getMonth()]
     if (month !== prevMonth && dateOfMonth < 15) {
+      const transform = `rotate(-40,${x + cellW / 2},${y-5})`
       eles.push(
         <g key={numOfDates + j}>
+          <rect
+            x={x+ 5}
+            y={y - fontSize - 5}
+            width={50}
+            height={fontSize + 4}
+            fill="#666"
+            rx="4"
+            transform={transform}
+          />
           <text
-            x={x}
-            y={y - 7}
-            fontSize={fontSize + 1}
+            x={x+ 10}
+            y={y - 5}
+            fill="#fff"
+            fontSize={fontSize}
             fontWeight="bold"
-            // transform={`rotate(-30,${x + cellW / 2},${y-7})`}
+            transform={transform}
           >
             {month}
           </text>
           <line
             x1={x}
-            y1={y - 4}
+            y1={y - 5}
             x2={x}
             y2={y}
             strokeWidth={1}
-            stroke="#aaa"
+            stroke="#666"
             key={date}
           />
         </g>
@@ -148,6 +159,7 @@ const timeAxis = ({
           y={y - 7}
           fontSize={fontSize / 1.3}
           key={`${date}-ordinal`}
+          transform={`rotate(-40,${x + cellW / 2},${y-7})`}
         >
           {dateOfMonth}{showDayOrdinal && nth(dateOfMonth)}
         </text>
@@ -370,7 +382,14 @@ const LinearGrid = React.memo(({
       const x = xStart + j * (cellW + cellPad)
       const y = yStart + i * (cellH + cellPad)
 
-      const hoverData = {x, y, data: dayData, name, date, value: val}
+      const hoverData = {
+        x, y,
+        data: dayData,
+        name,
+        date,
+        value: val,
+        fill
+      }
       const rect = (
         <rect
           x={x}

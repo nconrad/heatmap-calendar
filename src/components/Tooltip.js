@@ -15,14 +15,15 @@ const DefaultTooltip = (props) => {
 }
 
 const Tooltip = (props) => {
-  const {show, offset, tooltip} = props;
-  let {x = 0, y = 0, date, name, value} = props.data;
+  const {show, offset, tooltip, tooltipOutline} = props;
+  let {x = 0, y = 0, date, name, value, fill} = props.data;
 
   return (
     <TooltipRoot
       style={{
         top: y - offset * 2 - tooltipPad * 2,
-        left: x + offset
+        left: x + offset,
+        border: tooltipOutline ? `3px solid ${fill}` : 'none'
       }}
       className={`${show && 'show '} tooltip` }
     >
@@ -41,7 +42,7 @@ const Tooltip = (props) => {
 const tooltipPad = 8
 const TooltipRoot = styled.div`
   position: absolute;
-  background: #666;
+  background: #444;
   color: #fff;
   padding: ${tooltipPad}px;
   opacity: 0;
@@ -49,6 +50,7 @@ const TooltipRoot = styled.div`
   font-size: 0.9em;
   z-index: 9999;
   white-space: nowrap;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.7);
 
   &.show {
     opacity: 1.0;
