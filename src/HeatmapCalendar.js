@@ -81,7 +81,7 @@ const HeatmapCalendar = (props) => {
   }
 
   return (
-    <Root>
+    <Root mousePointer={Boolean(props.onClick)}>
       <SVG height={height} onMouseOut={onMouseOut}>
 
         {
@@ -154,6 +154,9 @@ const HeatmapCalendar = (props) => {
 
 const Root = styled.div`
   position: relative;
+  & rect:hover {
+    cursor: ${props => props.mousePointer && 'pointer'};
+  }
 `
 
 const SVG = styled.svg`
