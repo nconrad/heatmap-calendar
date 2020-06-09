@@ -13,7 +13,8 @@ const numOfDaysInWeek = 7
 const Grid = React.memo(({
     data, dataKey, startDate, endDate, cellH, cellW, xStart, yStart, cellPad,
     colorForValue, showValue, onMouseOver, onMouseOut, onClick,
-    minRGB, maxRGB, emptyRGB, histogram, histogramHeight, vertical = false
+    minRGB, maxRGB, emptyRGB, histogram, histogramHeight, vertical = false,
+    highlightDate
   }) => {
 
   // ensure data is sorted
@@ -106,6 +107,20 @@ const Grid = React.memo(({
 
       rects.push(ele)
 
+      if (highlightDate && highlightDate.getTime() == date.getTime()) {
+        rects.push(<rect
+          x={x - cellPad/2}
+          y={y - cellPad/2}
+          width={cellW + cellPad}
+          height={cellH + cellPad}
+          stroke="blue"
+          strokeWidth={2}
+          pointerEvents="none"
+          fill="none"
+          key={date + 'highlighted'}
+        />)
+      }
+
       // render month label if new and in first two weeks
       const month = months[date.getMonth()]
       if (i == 0 && month !== prevMonth && date.getDate() < 15) {
@@ -149,7 +164,11 @@ const Grid = React.memo(({
       {rects}
     </>
   )
-}, (prev, next) =>  prev.dataKey == next.dataKey)
+}, (prev, next) =>
+  prev.dataKey == next.dataKey &&
+  (prev.highlightDate && next.highlightDate &&
+    prev.highlightDate.getTime() == next.highlightDate.getTime())
+)
 
 export default Grid
 
