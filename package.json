@@ -20,7 +20,7 @@
   "homepage": "https://github.com/nconrad/heatmap-calendar#readme",
   "devDependencies": {
     "@babel/core": "^7.9.0",
-    "parcel": "^1.12.4",
+    "parcel": "^2.8.2",
     "sass": "^1.26.1"
   },
   "dependencies": {
